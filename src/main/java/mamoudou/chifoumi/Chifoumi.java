@@ -140,10 +140,14 @@ public class Chifoumi extends JFrame {
     public void initResult(String message, String computer, String you) {
         centerResults.add(left);
         centerResults.add(right);
-        result.setText(message);
+        
         next.setEnabled(true);
         setImage(left, computer, true);
         setImage(right, you, true);
+        
+        String check= checkWins(computer, you);
+        System.out.println(check);
+        wins(check, computer, you);
     }
 
     public void resetResult() {
@@ -226,6 +230,37 @@ public class Chifoumi extends JFrame {
         Random random = new Random();
         int randomIndex = random.nextInt(options.size());
         return options.get(randomIndex);
+    }
+    
+    public String checkWins(String computer, String user){
+        if((computer.equals("rock") || user.equals("rock")) && (computer.equals("cisor") || user.equals("cisor")))
+            return "rock";
+        if((computer.equals("cisor") || user.equals("cisor")) && (computer.equals("paper") || user.equals("paper")))
+            return "cisor";
+        if((computer.equals("paper") || user.equals("paper")) && (computer.equals("rock") || user.equals("rock")))
+            return "paper";
+        
+        return "Egalité";
+    }
+    
+    public void wins(String checkResult, String computer, String user){
+                
+        if(checkResult.equals(computer) && !checkResult.equals(user)){
+            result.setText("Victoire de l'ordinateur !!!");
+            cScore += 1;
+            System.out.println("mamoudou.chifoumi.Chifoumi.wins()");
+        }
+        if(!checkResult.equals(computer) && checkResult.equals(user)){
+            result.setText("Vous avez gagné !!!");
+            uScore += 1;
+        }
+        
+        if (checkResult.equals("Egalité")){
+            result.setText("Vous êtes à égalité !!!");
+        }
+        
+        computerScoreLabel.setText("Ordinteur: " + cScore);
+        yourScoreLabel.setText("Toi: " + uScore);
     }
 
     public static void main(String[] args) {
