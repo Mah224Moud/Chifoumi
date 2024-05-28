@@ -8,10 +8,14 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -30,11 +34,17 @@ public class Chifoumi extends JFrame {
 
     JButton rock, paper, cisor, game, next, left, right;
 
+    ArrayList<JButton> choices;
+    ArrayList<String> options = new ArrayList<>(Arrays.asList("rock", "paper", "cisor"));
+
+    int uScore, cScore = 0;
+
     public Chifoumi() {
         initSpecs();
         initComponents();
         initGameBord();
         initGame();
+        actions();
     }
 
     public void initSpecs() {
@@ -51,8 +61,8 @@ public class Chifoumi extends JFrame {
         center = new JPanel();
         buttom = new JPanel();
 
-        computerScoreLabel = new JLabel("Ordinteur: 0", JLabel.CENTER);
-        yourScoreLabel = new JLabel("Toi: 0", JLabel.CENTER);
+        computerScoreLabel = new JLabel("Ordinteur: " + cScore, JLabel.CENTER);
+        yourScoreLabel = new JLabel("Toi: " + uScore, JLabel.CENTER);
         intro = new JLabel("Fais ton choix entre Pierre , Papier et Ciseaux️", JLabel.CENTER);
         result = new JLabel("", JLabel.CENTER);
 
@@ -68,6 +78,12 @@ public class Chifoumi extends JFrame {
         right = new JButton();
         game = new JButton("Commencer");
         next = new JButton("Continuer");
+
+        rock.setName("rock");
+        paper.setName("paper");
+        cisor.setName("cisor");
+
+        choices = new ArrayList<>();
     }
 
     public void labelCustomer(JLabel label, int fontSize, int marginTop) {
@@ -116,7 +132,9 @@ public class Chifoumi extends JFrame {
     public void initGame() {
         next.setEnabled(false);
         setImages(false);
-        
+        choices.add(rock);
+        choices.add(paper);
+        choices.add(cisor);
     }
 
     public void initResult(String message, String computer, String you) {
@@ -124,10 +142,11 @@ public class Chifoumi extends JFrame {
         centerResults.add(right);
         result.setText(message);
         next.setEnabled(true);
-        setImage(cisor, you, true);
+        setImage(left, computer, true);
+        setImage(right, you, true);
     }
-    
-    public void resetResult(){
+
+    public void resetResult() {
         centerResults.removeAll();
         result.setText("");
         next.setEnabled(false);
@@ -139,26 +158,74 @@ public class Chifoumi extends JFrame {
             String path = "src/main/java/mamoudou/chifoumi/assets/" + picture + ".png";
             ImageIcon originalIcon = new ImageIcon(path);
 
-            button.addComponentListener(new ComponentAdapter() {
-                @Override
-                public void componentResized(ComponentEvent e) {
-                    int width = button.getWidth();
-                    int height = button.getHeight();
-                    if (width > 0 && height > 0) {
-                        Image resizedImage = originalIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-                        button.setIcon(new ImageIcon(resizedImage));
+            int width = button.getWidth();
+            int height = button.getHeight();
+            if (width > 0 && height > 0) {
+                Image resizedImage = originalIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                button.setIcon(new ImageIcon(resizedImage));
+            } else {
+                button.addComponentListener(new ComponentAdapter() {
+                    @Override
+                    public void componentResized(ComponentEvent e) {
+                        int newWidth = button.getWidth();
+                        int newHeight = button.getHeight();
+                        if (newWidth > 0 && newHeight > 0) {
+                            Image resizedImage = originalIcon.getImage().getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+                            button.setIcon(new ImageIcon(resizedImage));
+                            button.setEnabled(status);
+                            button.removeComponentListener(this);
+                        }
                     }
-                }
-            });
-            
-            button.setEnabled(false);
+                });
+            }
         }
+        button.setEnabled(status);
     }
-    
-    public void setImages(boolean status){
+
+    public void setImages(boolean status) {
         setImage(cisor, "cisor", status);
         setImage(rock, "rock", status);
         setImage(paper, "paper", status);
+    }
+
+    public void actions() {
+        game.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent action) {
+                setImages(true);
+                game.setText("Recommencer");
+                System.out.println(game.getName());
+                game.setName("Recommencer");
+
+                if (game.getName().equals("Recommencer")) {
+
+                }
+                setImage(left, getComputerChoice(), true);
+            }
+
+        });
+
+        for (JButton choice : choices) {
+            choice.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent action) {
+                    String computer = getComputerChoice();
+                    String you = choice.getName();
+                    System.out.println("toi ==> rig: " + you);
+                    System.out.println("com ==> lef: " + computer);
+                    resetResult();
+                    initResult("dfs", computer, you);
+                    setImage(left, computer, true);
+                    setImage(right, you, true);
+                }
+            });
+        }
+    }
+
+    public String getComputerChoice() {
+        Random random = new Random();
+        int randomIndex = random.nextInt(options.size());
+        return options.get(randomIndex);
     }
 
     public static void main(String[] args) {
