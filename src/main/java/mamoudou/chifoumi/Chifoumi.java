@@ -32,10 +32,10 @@ public class Chifoumi extends JFrame {
 
     JLabel computerScoreLabel, yourScoreLabel, intro, result;
 
-    JButton rock, paper, cisor, game, reset, left, right;
+    JButton rock, paper, scissor, game, reset, left, right;
 
     ArrayList<JButton> choices;
-    ArrayList<String> options = new ArrayList<>(Arrays.asList("rock", "paper", "cisor"));
+    ArrayList<String> options = new ArrayList<>(Arrays.asList("rock", "paper", "scissor"));
 
     int uScore, cScore = 0;
 
@@ -73,7 +73,7 @@ public class Chifoumi extends JFrame {
 
         rock = new JButton();
         paper = new JButton();
-        cisor = new JButton();
+        scissor = new JButton();
         left = new JButton();
         right = new JButton();
         game = new JButton("Commencer");
@@ -81,7 +81,7 @@ public class Chifoumi extends JFrame {
 
         rock.setName("rock");
         paper.setName("paper");
-        cisor.setName("cisor");
+        scissor.setName("scissor");
 
         choices = new ArrayList<>();
     }
@@ -107,7 +107,7 @@ public class Chifoumi extends JFrame {
         centerTopChoices.setLayout(new GridLayout(1, 3));
         centerTopChoices.add(rock);
         centerTopChoices.add(paper);
-        centerTopChoices.add(cisor);
+        centerTopChoices.add(scissor);
 
         centerCenter.setLayout(new BorderLayout());
         centerCenter.add(result, BorderLayout.NORTH);
@@ -134,7 +134,7 @@ public class Chifoumi extends JFrame {
         setImages(false);
         choices.add(rock);
         choices.add(paper);
-        choices.add(cisor);
+        choices.add(scissor);
     }
 
     public void initResult(String computer, String you) {
@@ -185,7 +185,7 @@ public class Chifoumi extends JFrame {
     }
 
     public void setImages(boolean status) {
-        setImage(cisor, "cisor", status);
+        setImage(scissor, "scissor", status);
         setImage(rock, "rock", status);
         setImage(paper, "paper", status);
     }
@@ -230,17 +230,17 @@ public class Chifoumi extends JFrame {
     }
 
     public String checkWins(String computer, String user) {
-        if ((computer.equals("rock") || user.equals("rock")) && (computer.equals("cisor") || user.equals("cisor"))) {
+        if ((computer.equals("rock") || user.equals("rock")) && (computer.equals("scissor") || user.equals("scissor"))) {
             return "rock";
         }
-        if ((computer.equals("cisor") || user.equals("cisor")) && (computer.equals("paper") || user.equals("paper"))) {
-            return "cisor";
+        if ((computer.equals("scissor") || user.equals("scissor")) && (computer.equals("paper") || user.equals("paper"))) {
+            return "scissor";
         }
         if ((computer.equals("paper") || user.equals("paper")) && (computer.equals("rock") || user.equals("rock"))) {
             return "paper";
         }
 
-        return "Egalité";
+        return "equality";
     }
 
     public void wins(String checkResult, String computer, String user) {
@@ -254,7 +254,7 @@ public class Chifoumi extends JFrame {
             uScore += 1;
         }
 
-        if (checkResult.equals("Egalité")) {
+        if (checkResult.equals("equality")) {
             result.setText("Vous êtes à égalité !!!");
         }
 
@@ -268,6 +268,10 @@ public class Chifoumi extends JFrame {
         computerScoreLabel.setText("Ordinteur: " + cScore);
         yourScoreLabel.setText("Toi: " + uScore);
         resetResult();
+    }
+
+    public String getResult() {
+        return result.getText();
     }
 
     public static void main(String[] args) {
